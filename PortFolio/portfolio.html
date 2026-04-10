@@ -1,0 +1,743 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tim — portfolio</title>
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #141417;
+    --bg3: #1a1a1f;
+    --bg4: #222228;
+    --accent: #7c6ef7;
+    --accent2: #5b4fcf;
+    --accent-glow: rgba(124,110,247,0.15);
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #5a5a70;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(124,110,247,0.3);
+    --green: #4ade80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  .nav { background: rgba(13,13,15,0.95); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+  .nav-logo { font-size: 16px; font-weight: 600; color: var(--accent); letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+  .nav-logo::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links button { background: none; border: none; color: var(--text2); font-size: 13px; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+  .nav-links button:hover, .nav-links button.active { color: var(--text); background: var(--bg3); }
+
+  .page { display: none; padding: 2rem; max-width: 860px; margin: 0 auto; }
+  .page.visible { display: block; }
+  #page-home { display: none; }
+  #page-home.visible { display: block; }
+  #page-wip.visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+  .hero { padding: 3rem 2rem 2rem; max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 12px; color: var(--accent); background: var(--accent-glow); border: 1px solid var(--border2); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 1.5rem; }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; }
+  .hero h1 { font-size: 42px; font-weight: 700; line-height: 1.15; margin-bottom: 1rem; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { font-size: 16px; color: var(--text2); line-height: 1.7; max-width: 540px; margin-bottom: 1.5rem; }
+  .hero-links { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--bg4); border-color: var(--border2); }
+
+  .discord-badge { display: inline-flex; align-items: center; gap: 8px; background: #5865F2; color: #fff; padding: 9px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; user-select: all; cursor: text; }
+  .discord-icon { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
+
+  .section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .about-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .about-card p { color: var(--text2); line-height: 1.75; font-size: 15px; white-space: pre-wrap; }
+  .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 1rem; }
+  .about-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  .about-stat .label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+  .about-stat .value { font-size: 15px; font-weight: 500; color: var(--text); }
+
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; margin-bottom: 1rem; }
+  .skill-tag { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-size: 13px; padding: 5px 14px; border-radius: 20px; }
+  .skill-tag.accent { border-color: var(--border2); color: var(--accent); background: var(--accent-glow); }
+
+  .projects-grid { display: grid; gap: 16px; }
+  .project-card:hover .project-img img {
+  transform: scale(1.1); /* zoom effect */
+}
+.project-card:hover {
+  transform: translateY(-4px);
+}
+  .project-img {
+  overflow: hidden; /* important so zoom stays inside */}
+  .project-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease; /* smooth animation */
+}
+  .project-body { padding: 1.25rem; }
+  .project-name { font-size: 17px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .project-desc { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 1rem; }
+  .project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .project-tag { font-size: 12px; background: var(--bg4); border: 1px solid var(--border); color: var(--text3); padding: 3px 10px; border-radius: 20px; }
+  .arrow { color: var(--text3); font-size: 18px; transition: 0.2s; }
+  .project-card:hover .arrow { color: var(--accent); transform: translateX(3px); }
+
+
+/* container */
+.wip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+  position: relative;
+  padding: 20px 0;
+  align-items: center;
+}
+
+/* vertical line */
+.wip-list::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+  opacity: 0.6;
+}
+
+/* each item */
+.wip-item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* TEXT BOX */
+.wip-text {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  max-height: 40px;         /* ONLY sentence visible */
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* TITLE always visible */
+.wip-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* HIDDEN CONTENT */
+.wip-hover {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+/* DOT */
+.wip-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: -32px;
+  transform: translateY(-50%);
+}
+
+/* glow */
+.wip-dot::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  top: -6px;
+  left: -6px;
+  opacity: 0.25;
+}
+
+/* LINE between items */
+.wip-item::after {
+  content: "";
+  width: 2px;
+  height: 45px;
+  background: var(--border);
+  position: absolute;
+  bottom: -45px;
+}
+
+/* REMOVE last line */
+.wip-item:last-child::after {
+  display: none;
+}
+
+/* HOVER EFFECT (THIS IS THE KEY) */
+.wip-item:hover .wip-text {
+  max-height: 200px;
+}
+
+.wip-item:hover .wip-hover {
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 8px;
+}
+
+.wip-line {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 45px;
+  background: var(--border);
+  z-index: 0;
+  pointer-events: none; /* 🔥 FIX CLICK BLOCKING */
+}
+
+.wip-heading {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin: 5rem 0 3rem;
+  color: var(--accent);
+}
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; max-width: 700px; width: 100%; }
+  .modal-header { padding: 1.5rem 1.5rem 1rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .modal-title { font-size: 22px; font-weight: 700; }
+  .modal-close { background: var(--bg4); border: 1px solid var(--border); color: var(--text2); font-size: 18px; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { color: var(--text); }
+  .modal-imgs { padding: 0 1.5rem 1rem; display: flex; gap: 10px; overflow-x: auto; }
+  .modal-img-slot img {
+  transition: transform 0.3s ease;
+}
+
+.modal-img-slot:hover img {
+  transform: scale(1.1);
+}
+  .modal-body { padding: 0 1.5rem 1.5rem; }
+  .modal-body p { color: var(--text2); line-height: 1.8; font-size: 15px; white-space: pre-wrap; }
+  .modal-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.75rem; }
+
+  .edit-btn { font-size: 12px; color: var(--text3); background: var(--bg4); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; cursor: pointer; }
+  .edit-btn:hover { color: var(--accent); border-color: var(--border2); }
+  .edit-form { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-top: 1rem; }
+  .edit-form label { font-size: 12px; color: var(--text3); display: block; margin-bottom: 6px; margin-top: 12px; }
+  .edit-form label:first-child { margin-top: 0; }
+  .edit-form input, .edit-form textarea { width: 100%; background: var(--bg2); border: 1px solid var(--border); color: var(--text); font-size: 14px; padding: 8px 12px; border-radius: 8px; font-family: inherit; resize: vertical; outline: none; }
+  .edit-form input:focus, .edit-form textarea:focus { border-color: var(--border2); }
+  .edit-form-actions { display: flex; gap: 8px; margin-top: 1rem; }
+  .edit-form-actions button { font-size: 13px; padding: 7px 16px; border-radius: 8px; cursor: pointer; border: none; }
+  .save-btn { background: var(--accent); color: #fff; }
+  .cancel-btn { background: var(--bg4); color: var(--text2); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">timchimm</div>
+  <div class="nav-links">
+    <button class="active" onclick="nav('home')">Home</button>
+    <button onclick="nav('projects')">Discord Projects</button>
+    <button onclick="nav('wip')">Working On</button>
+    <button onclick="nav('about')">About</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="visible">
+  <div class="hero">
+    <div class="hero-tag">available for projects</div>
+    <h1>Hey, I'm <span>timchimm</span><br>I build cool stuff.</h1>
+    <p id="hero-bio">Developer &amp; creator. I make projects that I find interesting — from tools to games to random experiments. Check out what I've been building.</p>
+    <div class="hero-links">
+      <button class="btn btn-primary" onclick="nav('projects')">View Projects →</button>
+      <button class="btn btn-ghost" onclick="nav('wip')">Currently Building</button>
+      <a href="https://discord.com/users/1136305288765517915" target="_blank" class="discord-link">
+  <div class="discord-badge">
+    <svg class="discord-icon" viewBox="0 0 24 24">
+      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.112 18.1.134 18.115a19.908 19.908 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+    </svg>
+    _timchimm_
+  </div>
+</a>
+    </div>
+    <div style="margin-top:1rem;">
+    </div>
+    <div id="hero-edit-form" class="edit-form" style="display:none;">
+      <label>Short bio (shown on home page)</label>
+      <textarea id="hero-bio-input" rows="3"></textarea>
+      <div class="edit-form-actions">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div id="page-projects" class="page">
+  <div id="projects-grid"></div>
+</div>
+
+<!-- WORKING ON -->
+<div id="page-wip" class="page">
+
+  <div class="wip-heading">Currently working on</div>
+
+
+  <div id="add-wip-form" class="edit-form" style="display:none; margin-bottom:1.5rem;">
+    <label>What are you building?</label>
+    <input type="text" id="new-wip-name" placeholder="New project name">
+
+    <label>Description</label>
+    <textarea id="new-wip-desc" rows="3" placeholder="What are you working on?"></textarea>
+
+    <label>Progress % (0–100)</label>
+    <input type="number" id="new-wip-progress" min="0" max="100" placeholder="40">
+
+    <div class="edit-form-actions">
+      
+    </div>
+  </div>
+
+  <div id="wip-list" class="wip-list"></div>
+
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="section-title" style="margin-top:1rem;">About me</div>
+  <div class="about-card">
+    <p id="about-text">Hey! I'm Tim — I love coding and building things.</p>
+    <div id="about-edit-form" class="edit-form" style="display:none;">
+      <label>About me text</label>
+      <textarea id="about-text-input" rows="6"></textarea>
+      <div class="edit-form-actions">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Stats &amp; info</div>
+  <div class="about-grid" id="stats-grid"></div>
+  <div style="margin-top:1rem;">
+    <div id="stats-edit-form" class="edit-form" style="display:none;">
+      <label>Label 1</label><input id="sl1" type="text" placeholder="Location">
+      <label>Value 1</label><input id="sv1" type="text" placeholder="Netherlands">
+      <label>Label 2</label><input id="sl2" type="text" placeholder="Focus">
+      <label>Value 2</label><input id="sv2" type="text" placeholder="Backend / Bots">
+      <label>Label 3</label><input id="sl3" type="text" placeholder="Languages">
+      <label>Value 3</label><input id="sv3" type="text" placeholder="Python, JS">
+      <label>Label 4</label><input id="sl4" type="text" placeholder="Started coding">
+      <label>Value 4</label><input id="sv4" type="text" placeholder="2024">
+      <div class="edit-form-actions">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:2rem;">Skills &amp; tools</div>
+  <div id="skills-grid" class="skills-grid"></div>
+  <div style="margin-bottom:2rem;">
+    <div id="skills-edit-form" class="edit-form" style="display:none;">
+      <label>Skills (comma separated — add * before main ones e.g. *Python)</label>
+      <input id="skills-input" type="text" placeholder="*Python, JavaScript, *Discord.py, Git, SQL">
+      <div class="edit-form-actions">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Contact</div>
+  <a href="https://discord.com/users/1136305288765517915" target="_blank" class="discord-link">
+  <div class="discord-badge" style="margin-bottom:2rem;">
+    <svg class="discord-icon" viewBox="0 0 24 24">
+      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/>
+    </svg>
+    _timchimm_
+  </div>
+</a>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title"></div>
+        <div id="modal-tags" class="modal-tags"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-imgs" id="modal-imgs"></div>
+    <div class="modal-body"><p id="modal-body"></p></div>
+  </div>
+</div>
+<script>
+  let state = {
+    heroBio: "Developer & creator. I make projects that I find interesting and fun — from tools to games to random experiments. Check out what I've been building.",
+    about: "Hey! I'm Tim — I love coding and building things. All projects i have done, are free, i did not charge for any of them.",
+    stats: [
+      { label: "Location", value: "Netherlands" },
+      { label: "Focus", value: "Backend / Bots / Websites" },
+      { label: "Languages", value: "Python, JS, HTML/CSS, C++" },
+      { label: "Started coding", value: "2023" }
+    ],
+    skills: ["Python", "JavaScript", "Discord.py", "Git", "HTML/CSS", "C++"],
+    accentSkills: ["Python", "Discord.py"],
+    projects: [
+      {
+        name: "Ticket System RepulseMC Discord",
+        catagory: "Minecraft Servers",
+        desc: "A Discord bot I built for managing support tickets in the RepulseMC Discord server. Click to see more details and screenshots .",
+        full: "This was my first big project. I built it with Discord.py and hosted it on a VPS. It has moderation commands, Transcripts and a custom ui. \n\nI learned a lot about async programming and working with APIs while making this. The hardest part was getting the ui to work becouse it kept on looking really weird — took a lot of trial and error with FFmpeg.  Commands: /ticketpanel.",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["RepulseMCTickets.png"]
+      },
+      {
+        name: "Security System RepulseMC Discord",
+        catagory: "Minecraft Servers",
+        desc: "Another Discord bot I built for the RepulseMC Discord server, this one is focused on security and anti-raid features. Click to see more details and screenshots.",
+        full: "This bot is also built with Discord.py and hosted on a VPS. It has features like auto-moderation, raid detection, and various security measures to protect the server from raids and malicious users.\n\nI built this bot to complement the ticket system bot and provide a safer environment for the community. It was a great learning experience in terms of implementing security features and handling edge cases in Discord moderation.",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["Image.png", "Image copy.png", "Image copy 2.png"]
+      },
+      {
+        name: "Bifrost Network Ticket System",
+        catagory: "Unturned",
+        desc: "A ticket system bot I built for the Bifrost Network Unturned server's Discord, With a custom Staff leaderboard, where the owners can check if their staff members are performing well, and a custom web dashboard for staff to manage tickets. It also includes a fully working html transcript that is send to the person who created the ticket and send in a transcript channel. Click to see more details and screenshots.",
+        full: "This ticket system bot is built with Discord.py and includes a custom web dashboard built with Flask for managing tickets more efficiently. It allows users to create support tickets, which are then tracked and managed by staff members through the dashboard. The bot includes features for categorizing tickets, assigning them to staff, and providing real-time updates on ticket status. The web dashboard enhances the user experience for staff members, allowing them to easily view and respond to tickets in a more organized manner. Additionally, the bot features a staff leaderboard that allows server owners to monitor the performance of their staff members based on ticket resolution metrics.\n\nThis project was a great opportunity to implement a structured support system within a Discord server, which helped improve user experience and streamline communication between players and moderators. It was rewarding to see how the bot helped organize and resolve support requests more efficiently while also providing valuable insights into staff performance. Commands: /ticketpanel",
+        tags: ["Python", "Discord.py", "Bot", "Web Dashboard"],
+        imgs: ["image copy 3.png", "image copy 4.png", "image copy 12.png"]
+      },
+      {
+        name: "Tokyo Life RP TIcket System",
+        catagory: "Unturned",
+        desc: "A ticket system bot I built for the Tokyo Life RP Unturned server's Discord. It features custom buttons to create a ticket. Click to see more details and screenshots.",
+        full: "This is a ticket system bot built with Discord.py for the Tokyo Life RP Unturned server's Discord. It allows users to create support tickets by clicking custom buttons, which then creates a private channel for the user and staff to communicate. The bot also includes features for categorizing and managing tickets efficiently.\n\nThis project was a great opportunity to further refine my skills in Discord bot development, particularly in creating interactive components like buttons and handling user interactions in a seamless way. It was rewarding to see how the bot improved the support process for the community. Commands: /ticket (for setting up the ticket panel)",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["image copy 5.png"]
+      },
+      {
+        name: "Tokyo Life RP Welcome bot",
+        catagory: "Unturned",
+        desc: "A welcome bot I built for the Tokyo Life RP Unturned server's Discord. It sends a welcome message with server rules and information when a new member joins. Click to see more details and screenshots.",
+        full: "This welcome bot is built with Discord.py and is designed to greet new members of the Tokyo Life RP Unturned server's Discord. When a new member joins, the bot sends a personalized welcome message that includes important information about the server, such as rules and guidelines. The bot also has features to assign roles to new members and provide them with resources to get started in the community.\n\nThis project was a great way to practice creating engaging and informative messages for new users, as well as implementing role assignment features in Discord.py. It was rewarding to see how the bot helped create a welcoming atmosphere for newcomers.  Commands: /example (for testing the welcome message)",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["image copy 6.png"]
+      },
+      { 
+        name:"Borderhoppers XP Tasks System",
+        catagory: "Unturned",
+        desc: "An XP tasks system bot I built for the Borderhoppers Unturned server's Discord. It allows players to complete tasks and earn XP for rewards. Click to see more details and screenshots.",
+        full: "This XP tasks system bot is built with Discord.py and is designed for the Borderhoppers Unturned server's Discord. It allows players to complete various tasks, such as participating in events or engaging with the community, to earn XP points. These points can then be redeemed for rewards within the server. The bot includes features for tracking player progress, managing tasks, and providing an engaging way for players to interact with the community and earn rewards.\n\nThis project was a great opportunity to implement a gamified system within a Discord server, which helped enhance player engagement and foster a sense of community. It was rewarding to see how the bot encouraged players to participate more actively in the server. This was by far the hardest project I've worked on becouse there were so many things i needed to implement such as leaderboards and task boards. Commands: /tasks, /leaderboard",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["image copy 7.png", "image copy 8.png", "image copy 9.png"]
+      },
+      {
+        name: "Project X Ticket System",
+        catagory: "Unturned",
+        desc: "A ticket system bot I built for managing support requests on the Unturned server's Discord. Click to see more details and screenshots.",
+        full: "This ticket system bot is built with Discord.py and is designed for the Unturned server's Discord. It allows users to create tickets for support requests, which are then managed by moderators. The bot includes features for tracking ticket status, HTML Transcript that is send to the person who created the ticket, and is logged in a transcript channel, assigning tickets to staff members, and providing a seamless experience for users seeking help.\n\nThis project was a great opportunity to implement a structured support system within a Discord server, which helped improve user experience and streamline communication between players and moderators. It was rewarding to see how the bot helped organize and resolve support requests more efficiently. Commands: /ticketpanel",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["image copy 10.png", "image copy 13.png"]
+      },
+      {
+        name: "Unturned 30 Years Later Ticket System",
+        catagory: "Unturned",
+        desc: "A ticket system bot I built for the Unturned 30 Years Later server's Discord. It features custom commands and a web dashboard for managing tickets. Click to see more details and screenshots.",
+        full: "This ticket system bot is built with Discord.py and includes a web dashboard built with Flask for managing tickets more efficiently. It allows users to create support tickets, which are then tracked and managed by staff members through the dashboard. The bot includes features for categorizing tickets, assigning them to staff, and providing real-time updates on ticket status. The web dashboard enhances the user experience for staff members, allowing them to easily view and respond to tickets in a more organized manner.\n\nThis project was pretty easy for me to set up, i only needed to configure the banner and name. This was the first project i made from my already existing premade ticket panels, so it was a good way to quickly deploy a bot for a new server while still providing a high level of functionality. Commands: /ticketpanel",
+        tags: ["Python", "Discord.py", "Bot", "Web Dashboard"],
+        imgs: ["image copy 11.png"]
+      },
+      {
+        name: "Premade Ticket System Template",
+        catagory: "Discord Tools",
+        desc: "A premade ticket system template that I built for Discord servers. It includes all the necessary features for a functional ticket system, such as ticket creation, management, and HTML transcripts. Click to see more details and screenshots.",
+        full: "This premade ticket system template is built with Discord.py and is designed to be easily customizable for any Discord server. It includes features such as ticket creation, management, and HTML transcripts. The template is structured in a way that allows server owners to easily modify the code to fit their specific needs, such as changing the design of the ticket panels or adding additional features. This project was a great way to create a reusable solution for Discord servers looking to implement a ticket system without having to build one from scratch. It was rewarding to see how this template helped other server owners quickly set up their own ticket systems with ease. Commands: /ticketpanel (for setting up the ticket panel)",
+        tags: ["Python", "Discord.py", "Bot"],
+        imgs: ["image copy 14.png"]
+        
+      }
+    ],
+    wip: [
+      { name: "New Website Feature", desc: "Adding more features and polish to my portfolio.", progress: 60 },
+      { name: "Discord Bots for MCBE Tier List", desc: "Creating Discord bots to manage their discord servers for Minecraft Bedrock Edition.", progress: 75 }
+    ]
+  };
+
+  let currentProjectIndex = null;
+
+function nav(page) {
+  // hide all pages
+  document.getElementById('page-home').classList.remove('visible');
+  document.getElementById('page-projects').classList.remove('visible');
+  document.getElementById('page-wip').classList.remove('visible');
+  document.getElementById('page-about').classList.remove('visible');
+
+  // remove active nav
+  document.querySelectorAll('.nav-links button')
+    .forEach(b => b.classList.remove('active'));
+
+  // show selected page
+  const map = {
+    home: 'page-home',
+    projects: 'page-projects',
+    wip: 'page-wip',
+    about: 'page-about'
+  };
+
+  document.getElementById(map[page]).classList.add('visible');
+
+  // set active button
+  const order = ['home', 'projects', 'wip', 'about'];
+  document.querySelectorAll('.nav-links button')[order.indexOf(page)]
+    .classList.add('active');
+
+  // render content
+  if (page === 'projects') renderProjects();
+  if (page === 'wip') renderWip();
+  if (page === 'about') renderAbout();
+}
+
+  function toggleForm(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+function renderProjects() {
+  const g = document.getElementById('projects-grid');
+
+  const groups = {};
+  state.projects.forEach((p, i) => {
+    const key = p.catagory || "Other";
+    if (!groups[key]) groups[key] = [];
+    groups[key].push({ ...p, index: i });
+  });
+
+  g.innerHTML = Object.keys(groups).map(cat => `
+    <div style="margin-top:2rem;">
+      <div class="section-title" style="font-size:28px; font-weight:bold;">
+        ${cat}
+      </div>
+
+      ${groups[cat].map(p => `
+        <div class="project-card" onclick="openProject(${p.index})">
+          <div class="project-img" style="${p.imgs.length ? '' : 'background:var(--bg4);'}">
+            ${p.imgs.length
+              ? `<img src="${p.imgs[0]}">`
+              : `<span style="color:var(--text3);font-size:13px;">No image yet</span>`}
+          </div>
+
+          <div class="project-body">
+            <div class="project-name">${p.name}</div>
+            <div class="project-desc">${p.desc}</div>
+            <div class="project-tags">
+              ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+  function renderWip() {
+  const l = document.getElementById('wip-list');
+
+  if (!state.wip.length) {
+    l.innerHTML = '<p style="color:var(--text3); font-size:14px;">Nothing added yet.</p>';
+    return;
+  }
+
+  l.innerHTML = state.wip.map((w) => `
+    <div class="wip-item">
+
+      <div class="wip-line"></div>
+      <div class="wip-dot"></div>
+
+      <div class="wip-text">
+        <div class="wip-title">${w.name}</div>
+
+        <div class="wip-hover">
+          <div class="wip-desc">${w.desc}</div>
+
+          <div style="margin-top:10px;">
+            <div style="height:6px; background:var(--bg3); border-radius:10px; overflow:hidden;">
+              <div style="height:100%; width:${w.progress}%; background:var(--accent);"></div>
+            </div>
+            <div style="font-size:12px; color:var(--text3); margin-top:6px;">
+              ${w.progress}% done
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  `).join('');
+}
+
+  function renderAbout() {
+    document.getElementById('about-text').textContent = state.about;
+    document.getElementById('stats-grid').innerHTML = state.stats.map(s => `
+      <div class="about-stat">
+        <div class="label">${s.label}</div>
+        <div class="value">${s.value}</div>
+      </div>`).join('');
+    document.getElementById('skills-grid').innerHTML = state.skills.map(s => `
+      <span class="skill-tag ${state.accentSkills.includes(s) ? 'accent' : ''}">${s}</span>`).join('');
+  }
+
+  function openProject(i) {
+    currentProjectIndex = i;
+    const p = state.projects[i];
+    document.getElementById('modal-title').textContent = p.name;
+    document.getElementById('modal-body').textContent = p.full;
+    document.getElementById('modal-tags').innerHTML = p.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
+    renderModalImgs(i);
+    document.getElementById('modal-overlay').classList.remove('hidden');
+  }
+
+  function renderModalImgs(i) {
+    const p = state.projects[i];
+    document.getElementById('modal-imgs').innerHTML =
+      p.imgs.map(src => `<div class="modal-img-slot"><img src="${src}" alt="screenshot"></div>`).join('') 
+  }
+
+  function addImgToProject(i) {
+    const url = prompt('Paste an image URL:');
+    if (url && url.trim()) {
+      state.projects[i].imgs.push(url.trim());
+      renderModalImgs(i);
+    }
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+  }
+  function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    currentProjectIndex = null;
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+  function addProject() {
+    const name = document.getElementById('new-proj-name').value.trim();
+    if (!name) { alert('Please enter a project name.'); return; }
+    const imgVal = document.getElementById('new-proj-img').value.trim();
+    state.projects.push({
+      name,
+      desc: document.getElementById('new-proj-desc').value.trim(),
+      full: document.getElementById('new-proj-full').value.trim(),
+      tags: document.getElementById('new-proj-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+      imgs: imgVal ? [imgVal] : []
+    });
+    ['new-proj-name','new-proj-desc','new-proj-full','new-proj-tags','new-proj-img'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('add-project-form').style.display = 'none';
+    renderProjects();
+  }
+
+  function addWip() {
+  const name = document.getElementById("new-wip-name").value.trim();
+  const desc = document.getElementById("new-wip-desc").value.trim();
+  const progress = parseInt(document.getElementById("new-wip-progress").value) || 0;
+
+  if (!name) {
+    alert("Please enter a project name.");
+    return;
+  }
+
+  state.wip.push({
+    name,
+    desc,
+    progress: Math.min(100, Math.max(0, progress))
+  });
+
+  // clear inputs
+  document.getElementById("new-wip-name").value = "";
+  document.getElementById("new-wip-desc").value = "";
+  document.getElementById("new-wip-progress").value = "";
+
+  // hide form
+  document.getElementById("add-wip-form").style.display = "none";
+
+  // re-render list properly
+  renderWip();
+}
+
+  function removeWip(i) {
+    if (confirm('Remove this item?')) {
+      state.wip.splice(i, 1);
+      renderWip();
+    }
+  }
+
+  function editHeroBio() {
+    document.getElementById('hero-bio-input').value = state.heroBio;
+    document.getElementById('hero-edit-form').style.display = 'block';
+  }
+  function saveHeroBio() {
+    state.heroBio = document.getElementById('hero-bio-input').value;
+    document.getElementById('hero-bio').textContent = state.heroBio;
+    document.getElementById('hero-edit-form').style.display = 'none';
+  }
+
+  function editAbout() {
+    document.getElementById('about-text-input').value = state.about;
+    document.getElementById('about-edit-form').style.display = 'block';
+  }
+  function saveAbout() {
+    state.about = document.getElementById('about-text-input').value;
+    renderAbout();
+    document.getElementById('about-edit-form').style.display = 'none';
+  }
+
+  function editStats() {
+    document.getElementById('stats-edit-form').style.display = 'block';
+    state.stats.forEach((s, i) => {
+      document.getElementById(`sl${i+1}`).value = s.label;
+      document.getElementById(`sv${i+1}`).value = s.value;
+    });
+  }
+  function saveStats() {
+    state.stats = [1,2,3,4].map(i => ({
+      label: document.getElementById(`sl${i}`).value,
+      value: document.getElementById(`sv${i}`).value
+    }));
+    renderAbout();
+    document.getElementById('stats-edit-form').style.display = 'none';
+  }
+
+  function editSkills() {
+    document.getElementById('skills-input').value = state.skills.map(s => state.accentSkills.includes(s) ? '*' + s : s).join(', ');
+    document.getElementById('skills-edit-form').style.display = 'block';
+  }
+  function saveSkills() {
+    const raw = document.getElementById('skills-input').value.split(',').map(s => s.trim()).filter(Boolean);
+    state.skills = raw.map(s => s.startsWith('*') ? s.slice(1) : s);
+    state.accentSkills = raw.filter(s => s.startsWith('*')).map(s => s.slice(1));
+    renderAbout();
+    document.getElementById('skills-edit-form').style.display = 'none';
+  }
+</script>
+</body>
+</html>
